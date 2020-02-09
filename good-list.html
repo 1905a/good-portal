@@ -1,0 +1,1143 @@
+
+<html>
+
+<link href="css/bootstrap.min.css" rel="stylesheet"/>
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+
+
+<script src="js/bootbox.min.js"></script>
+<script src="js/bootbox.locales.min.js"></script>
+
+<!-- 引入DataTables的css文件 -->
+<link href="DataTables/css/jquery.dataTables.min.css" rel="stylesheet" />
+<script src="DataTables/js/jquery.dataTables.min.js"></script>
+
+<!-- 引入fileinput文件上传插件的css文件和js文件 -->
+<link href="bootstrap-fileinput/css/fileinput.min.css" rel="stylesheet" />
+<script src="bootstrap-fileinput/js/fileinput.min.js"></script>
+<script src="bootstrap-fileinput/js/locales/zh.js"></script>
+
+
+<!-- 日期插件 -->
+<link href="bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet"/>
+<script src="bootstrap-datetimepicker/js/moment-with-locales.js"></script>
+<script src="bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+
+<!-- 下拉框 -->
+<script src="bootstrap-select/js/bootstrap-select.min.js"></script>
+<script src="bootstrap-select/js/i18n/defaults-zh_CN.min.js"></script>
+<link href="bootstrap-select/css/bootstrap-select.min.css" rel="stylesheet"/>
+
+
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+
+
+<!-- 导航栏 -->
+<nav class="navbar navbar-inverse" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">商品管理系统</a>
+        </div>
+        <div>
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="">商品管理</a></li>
+                <li><a href="">类型管理</a></li>
+                <li><a href="">产地管理</a></li>
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+
+<!-- 条件查询+表头 -->
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        条件查询
+    </div>
+    <div class="panel-body">
+        <form class="form-horizontal">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">商品名称:</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="name" placeholder="请输入商品名称">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">价格:</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="price" >
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label  class="col-sm-2 control-label">是否上架:</label>
+                            <div class="col-sm-10">
+                                <label class="radio-inline">
+                                    <input type="radio" name="status" value="1"/>是
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="status" value="2"/>否
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label  class="col-sm-2 control-label">生产日期:</label>
+                            <div class="col-sm-10">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="minProducedDate"/>
+                                    <span class="input-group-addon">至</span>
+                                    <input type="text" class="form-control" id="maxProducedDate"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label  class="col-sm-2 control-label">地区:</label>
+                            <div class="col-sm-10">
+                                <select id="areaId" class="form-control">
+                                    <option value="-1">请选择</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+
+                <div class="row">
+                    <div style="padding-left:110px">
+                        <button type="button" onclick="search()" class="btn btn-primary">
+                            <span class="glyphicon glyphicon-search"></span>查询
+                        </button>
+                        &nbsp;
+                        <button type="reset" class="btn btn-danger">
+                            <span class="glyphicon glyphicon-refresh"></span>&nbsp;&nbsp;重置
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- 电影列表面板 -->
+    <div class="panel panel-primary">
+        <div class="panel-heading">商品列表</div>
+        <div class="panel-body">
+            <div style="margin-bottom:10px">
+                <button type="button" onclick="showAddGoodDiv()" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-plus"></span>新增
+                </button>
+                <button type="button" onclick="batchDelete()" class="btn btn-danger">
+                    <span class="glyphicon glyphicon-minus"></span>批量删除
+                </button>
+            </div>
+            <table id="goodTable" class="table table-striped table-bordered table-hover table-condensed">
+                <thead>
+                <tr>
+                    <th>
+                        <input type="checkbox" />
+                    </th>
+                    <th>商品名称</th>
+                    <th>价格</th>
+                    <th>销量</th>
+                    <th>二维码</th>
+                    <th>库存</th>
+                    <th>图片</th>
+                    <th>生产日期</th>
+                    <th>保质期</th>
+                    <th>地区</th>
+                    <th>是否上架</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+
+
+<!-- 隐藏的新增界面的 -->
+<div id="addGoodDiv"  style="display:none">
+
+    <form class="form-horizontal" >
+        <div class="panel-body" >
+            <!-- 存放路径 -->
+            <input type="text" name="addGoodPath" id="addGoodPath" value="" >
+
+            <div class="form-group">
+                <label  class="col-sm-2 control-label">名称:</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="addGoodName" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label  class="col-sm-2 control-label">价格</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="addGoodPrice" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label  class="col-sm-2 control-label">销量</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="addGoodSales" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label  class="col-sm-2 control-label">库存</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="addGoodStock" />
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label  class="col-sm-2 control-label">图片展示</label>
+                <div class="col-sm-4">
+                    <input type="file"  name="addPhoto" id="addPhoto" class="form-control" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label  class="col-sm-2 control-label">保质期(月):</label>
+                <div class="col-sm-4">
+                    <input id="addGoodShelfLife"class="form-control" />
+                </div>
+            </div>
+
+
+
+            <div class="form-group">
+                <label  class="col-sm-2 control-label">是否上架:</label>
+                <div class="col-sm-10">
+                    <label class="radio-inline">
+                        <input type="radio" name="addStatus" value="1"/>是
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="addStatus" value="2"/>否
+                    </label>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label  class="col-sm-2 control-label">产地:</label>
+                <div class="col-sm-2"  id="addGoodArea" ></div>
+                <div class="col-sm-2"  id="addGoodArea2" ></div>
+
+            </div>
+
+        </div>
+    </form>
+
+</div>
+
+
+
+<div id="buyGoodDiv"  style="display:none">
+    <form class="form-horizontal" >
+        <div class="form-group">
+            <label  class="col-sm-2 control-label">取出商品数量:</label>
+            <div class="col-sm-4">
+                <input type="text" class="form-control" id="buyGoodCount" />
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<!-- 隐藏的修改界面的 -->
+<div id="updateGoodDiv"  style="display:none">
+
+    <form class="form-horizontal" >
+        <div class="panel-body" >
+            <!-- 存放路径 -->
+            <input type="text"  id="updateGoodPath" value="" readonly>
+            <input type="text"  id="updateGoodId"  readonly>
+            <input type="text"  id="updateGoodBarCode"  hidden>
+
+            <div class="form-group">
+                <label  class="col-sm-2 control-label">商品名称:</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="updateGoodName" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label  class="col-sm-2 control-label">价格</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="updateGoodPrice" />
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label  class="col-sm-2 control-label">销量</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="updateGoodSales" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label  class="col-sm-2 control-label">库存</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="updateGoodStock" />
+                </div>
+            </div>
+
+
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">图片展示</label>
+                <div class="col-sm-4">
+                    <img src="" id="updatePhoto" width="100" class="img-thumbnail"/>
+                    <input type="file"  name="photos" id="updatePhotos" class="form-control" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label  class="col-sm-2 control-label">保质期(月):</label>
+                <div class="col-sm-4">
+                    <input id="updateGoodShelfLife"class="form-control" />
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label  class="col-sm-2 control-label">是否上架:</label>
+                <div class="col-sm-10">
+                    <label class="radio-inline">
+                        <input type="radio" name="updateStatus" value="1"/>是
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="updateStatus" value="2"/>否
+                    </label>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label  class="col-sm-2 control-label">产地:</label>
+                <div class="col-sm-2" id="updateArea">
+
+                </div>
+
+
+            </div>
+
+        </div>
+    </form>
+
+</div>
+
+
+
+</body>
+
+<!-- 用于页面加载之后查询的方法 -->
+<script type="text/javascript">
+
+    $(function(){
+        selectGoodList(1);
+
+
+    })
+
+    function search(){
+        //重新使用ajax加载数据
+        goodTable.ajax.reload();
+    }
+
+
+
+
+    var goodTable;
+    function selectGoodList(pageIndex){
+        goodTable = $("#goodTable").DataTable({
+                //开启服务端模式
+                serverSide:true,
+                //开启是否显示处理状态
+                processing:true,
+                ordering:false,
+                //进行国际化处理配置
+                language: {
+                    "sProcessing": "处理中...",
+                    "sLengthMenu": "显示 _MENU_ 项结果",
+                    "sZeroRecords": "没有匹配结果",
+                    "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                    "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
+                    "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                    "sInfoPostFix": "",
+                    "sSearch": "搜索:",
+                    "sUrl": "",
+                    "sEmptyTable": "表中数据为空",
+                    "sLoadingRecords": "载入中...",
+                    "sInfoThousands": ",",
+                    "oPaginate": {
+                        "sFirst": "首页",
+                        "sPrevious": "上页",
+                        "sNext": "下页",
+                        "sLast": "末页"
+                    },
+                    "oAria": {
+                        "sSortAscending": "以升序排列此列",
+                        "sSortDescending": "以降序排列此列"
+                    }
+                },
+                //开启是否显示搜索框
+                searching:true,
+                //设置每页显示条数下拉框的值
+                lengthMenu:[2,5,10,15],
+                ajax:{
+                    //设置请求的地址
+                    url:"http://localhost:8081/GoodController/queryGoodList",
+                    dataSrc:function(f){
+                        if(f.status==200){
+                            f.draw =f.data.draw;
+                            f.recordsTotal=f.data.recordsTotal;
+                            f.recordsFiltered=f.data.recordsFiltered;
+                            return f.data.data;
+                        }else{
+                            return "";
+                        }
+                    },
+                    data:function(p){
+                        //获取查询条件的值
+                        //复选框
+
+                        p.name = $("#name").val();
+                        p.grade = $("#grade").val();
+                        p.isHot = $("[name=isHot]:checked").val();
+                        p.typeId = $("#typeId").val();
+
+                        p.minShowTime = $("#minShowTime").val();
+                        p.maxShowTime = $("#maxShowTime").val();
+                        p.areaId = $("#areaId").val();
+
+
+                    }
+                },
+
+
+
+
+
+                "columns":[
+                    {
+                        "data":"id",
+                        "render":function(data){
+                            return "<input type=\"checkbox\" name=\"id\" value=\"" + data + "\" />";
+                        }
+                    },
+                    {"data":"name"},
+                    {"data":"price"},
+                    {"data":"sales"},
+                    {"data":"barCode"},
+                    {"data":"stock"},
+
+
+                    {
+                        "data":"ImageUrl",
+                        "render":function(data, type, full, meta) {
+                            return "<img width='50px' src='" + data +"' class='img-thumbnail'/>";
+                        }
+                    },
+
+                    {"data":"producedDate"},
+                    {"data":"shelfLife"},
+
+                    {"data":"areaName"},
+
+
+                    {"data":"status",
+                        "render":function(data) {
+                            return data == 1?"是":"否";
+                        }
+                    },
+
+
+                    {
+                        "data":"id",
+                        "render":function(data){
+                            return '<div class="btn-group btn-group-xs">'+
+                                '<button type="button" onclick="showUpdateGoodDiv('+data+')" class="btn btn-primary">'+
+                                '	<span class="glyphicon glyphicon-pencil"></span>&nbsp;修改'+
+                                '</button>'+
+                                '<button type="button" onclick="deleteGood('+data+')" class="btn btn-danger">'+
+                                '	<span class="glyphicon glyphicon-trash"></span>&nbsp;删除'+
+                                '</button>'+
+                                '<button type="button" onclick="showBuyGoodDiv('+data+')" class="btn btn-primary">'+
+                                '	<span class="glyphicon glyphicon-pencil"></span>&nbsp;取出'+
+                                '</button>'+
+                                '</div>';
+                        }
+                    }
+                ]
+            }
+        );
+    }
+</script>
+
+
+<script type="text/javascript">
+    var buyGoodDivHTML
+    $(function() {
+        buyGoodDivHTML = $("#buyGoodDiv").html();
+    })
+
+        function showBuyGoodDiv(id){
+            $.ajax({
+                data:{"id":id},
+                dataType:"json",
+                url:"http://localhost:8081/GoodController/toUpdateGood",
+                type:"post",
+                success:function(data){
+
+                    bootbox.confirm({
+                        title: "取出",
+                        message: $("#buyGoodDiv form"),
+                        size: "lg",
+                        scrollable: true,
+                        callback: function (result) {
+
+                            //如果点击了确认按钮，则提交修改div表单中的数据
+                            if (result) {
+
+                                var param = {};
+
+                                param.count = $("#buyGoodCount").val();
+                                //获取id
+                                param.id = data.data.id;
+
+                                if(param.count <= data.data.stock){
+                                    $.ajax({
+                                        url: "http://localhost:8081/GoodController/updateGood2",
+                                        type: "post",
+                                        dataType: "json",
+                                        data: param,
+                                        success: function (result) {
+                                            if (result.status == 200) {
+                                                bootbox.alert({
+                                                    title: "<b>成功提示</b>",
+                                                    message: "恭喜您取出成功!",
+                                                    buttons: {
+                                                        ok: {
+                                                            label: "确定"
+                                                        }
+                                                    }
+                                                });
+                                                search();
+                                            }
+                                        },
+                                        error: function () {
+                                            alert("修改失败，请联系管理员！");
+                                        }
+                                    });
+                                }else{
+                                    alert("取出数量不能大于库存!!")
+                                }
+
+
+                            }
+
+                            //重新赋值   以防第二次点 不出表格
+                            $("#buyGoodDiv").html(buyGoodDivHTML);
+                            //重置 文件域 时间选择
+
+                        },
+
+                        buttons: {
+                            confirm: {
+                                label: "确认",
+                                className: "btn btn-success"
+                            },
+                            cancel: {
+                                label: "取消",
+                                className: "btn btn-danger"
+                            }
+                        }
+                    });
+
+
+                    var result = data.data;
+                    //回显表单中的数据
+                    $("#updateGoodId").val(result.id);
+
+
+                },
+                error:function(){
+
+                    alert("无法修改   别点了!!!")
+                }
+            })
+
+    }
+</script>
+
+
+<!-- 新增 -->
+<script type="text/javascript">
+    var addGoodDivHTML
+    $(function(){
+
+        addGoodDivHTML = $("#addGoodDiv").html();
+        initGoodPhoto();
+        initArea();
+    })
+    var areaArr
+    function initArea(pid){
+        //所在地信息
+        if(pid == undefined){
+            pid = 1
+        $.ajax({
+            url:"http://localhost:8081/GoodController/queryAreaByPid",
+            data:{pid:pid},
+            dataType:"json",
+            async:false,
+            success:function(result){
+
+                if(result.status == 200){
+                    if(result.data == null || result.data.length < 1){
+                        return;
+                    }
+                    areaArr = result.data;
+                    var areaSelectHTML = "<select  class='form-control' onchange='changeArea(this)'>";
+                    areaSelectHTML += "<option value='-1'>--请选择--</option>";
+                        for(var i = 0 ; i < result.data.length ; i ++){
+                            areaSelectHTML += "<option value='" + result.data[i].id + "'>" + result.data[i].name + "</option>";
+                        }
+                    areaSelectHTML += "</select>";
+                    $("#addGoodArea").append(areaSelectHTML);
+                }else{
+                    alert("下拉框出错");
+                }
+            },
+            error:function(){
+                alert("查询地区信息失败!");
+            }
+        });
+        }
+    }
+
+
+
+    function changeArea(obj){
+        var pid = obj.value
+            $.ajax({
+                data:{pid:pid},
+                dataType:"json",
+                url:"http://localhost:8081/GoodController/queryAreaByPid",
+                type:"post",
+                success:function(data){
+                    if(data.status == 200){
+
+                        if(data.data == null || data.data.length < 1){
+                            return;
+                        }
+                        var areaSelectHTML1 = "<select name='areaSelect' id='abc'  class='form-control'>";
+                        areaSelectHTML1 += "<option value='-1'>--请选择--</option>";
+                        for(var i = 0 ; i < data.data.length ; i ++){
+                            areaSelectHTML1 += "<option value='" + data.data[i].id + "'>" + data.data[i].name + "</option>";
+                        }
+                        areaSelectHTML1 += "</select>";
+                        $("#addGoodArea2").append(areaSelectHTML1);
+                    }else{
+                        alert("下拉框出错");
+                    }
+                },
+                error:function(){
+                    alert("出错!!!")
+                },
+            })
+
+    }
+
+    //添加的弹框里面的文件域
+    function initGoodPhoto(){
+        //使用Fileinput初始化新增商品表单中的商品主图文件域
+        $("#addPhoto").fileinput({
+            language:"zh",//设置语言选项
+            maxFileCount:1,//设置最大上传文件个数
+            //设置文件上传的地址
+            uploadUrl:"http://localhost:8081/GoodController/uploadFile"
+        });
+        //设置文件上传之后的回调函数
+        $("#addPhoto").on("fileuploaded",function(a,b,c,d){
+            //其中b就代表服务器返回的数据
+            var result = b.response;
+            if(result.code == 200){
+                //将图片上传后的路径放入新增商品表单中的用于存放图片路径的隐藏域中
+                $("#addGoodPath").val(result.filePath);
+            }
+        });
+
+    }
+
+
+
+    function showAddGoodDiv(){
+        bootbox.confirm({
+            title:"新增",
+            message:$("#addGoodDiv form"),
+            size:"lg",
+            scrollable:true,
+            callback:function(result){
+                //如果点击了确认按钮，则提交新增div表单中的数据
+                if(result){
+
+                    var param = {};
+                    //【1】获取新增div表单中的值
+                    //获取图片名称
+
+                    param.ImageUrl = $("#addGoodPath").val();
+                    //获取名称
+                    param.name = $("#addGoodName").val();
+
+                    param.price = $("#addGoodPrice").val();
+
+                    param.sales = $("#addGoodSales").val();
+
+                    param.stock = $("#addGoodStock").val();
+
+                    param.sales = $("#addGoodSales").val();
+                    param.shelfLife = $("#addGoodShelfLife").val();
+
+                    param.status = $("[name=addStatus]:checked").val();
+                    param.areaId = $("#abc").val();
+
+                    //发起新增的ajax请求
+                    $.ajax({
+                        url:"http://localhost:8081/GoodController/addGood",
+                        type:"post",
+                        dataType:"json",
+                        data:param,
+                        success:function(result){
+                            if(result.status == 200){
+                                bootbox.alert({
+                                    title:"<b>成功提示</b>",
+                                    message:"恭喜您添加成功!",
+                                    buttons:{
+                                        ok:{
+                                            label:"确定"
+                                        }
+                                    }
+                                });
+                                search();
+                            }
+                        },
+                        error:function(){
+                            alert("新增失败，请联系管理员！");
+                        }
+                    });
+                }
+                //重新赋值   以防第二次点添加 不出表格
+                $("#addGoodDiv").html(addGoodDivHTML);
+                //重置时间选择   下拉框 图片域
+                initGoodPhoto();
+                initArea();
+
+            },
+
+            buttons:{
+                confirm:{
+                    label:"确认",
+                    className:"btn btn-success"
+                },
+                cancel:{
+                    label:"取消",
+                    className:"btn btn-danger"
+                }
+            }
+        });
+    }
+
+
+
+</script>
+
+
+<!-- 修改 -->
+<script>
+    var updateGoodDivHTML;
+    $(function(){
+
+        updateGoodDivHTML = $("#updateGoodDiv").html();
+        initUpdateGoodPhoto();
+
+    })
+
+
+    //回显的弹框里面的文件域
+    function initUpdateGoodPhoto(){
+        //使用Fileinput初始化新增商品表单中的商品主图文件域
+        $("#updatePhotos").fileinput({
+            language:"zh",//设置语言选项
+            maxFileCount:1,//设置最大上传文件个数
+            //设置文件上传的地址
+            uploadUrl:"http://localhost:8081/GoodController/uploadFile"
+        });
+        //设置文件上传之后的回调函数
+        $("#updatePhotos").on("fileuploaded",function(a,b,c,d){
+            //其中b就代表服务器返回的数据
+            var result = b.response;
+            if(result.code == 200){
+                //将图片上传后的路径放入新增商品表单中的用于存放图片路径的隐藏域中
+                $("#updateGoodPath").val(e.filePath);
+                $("#updatePhoto").attr("src",e.filePath);
+            }
+        });
+
+    }
+
+    function initArea2(pid,selectedId){
+        //回显所在地信息
+        $.ajax({
+            url:"http://localhost:8081/GoodController/queryAreaByPid",
+            data:{pid:pid},
+            dataType:"json",
+            async:false,
+            success:function(result){
+                if(result.status == 200){
+                    if(result.data == null || result.data.length < 1){
+                        return;
+                    }
+
+                    var areaSelectHTML = "<select name='areaSelect' class='selt mr5' onchange='changeArea2(this)'>";
+                    areaSelectHTML += "<option value='-1'>--请选择--</option>";
+                    for(var i = 0 ; i < result.data.length ; i ++){
+                        areaSelectHTML += "<option " + (selectedId==result.data[i].id?"selected":"") + " value='" + result.data[i].id + "'>" + result.data[i].name + "</option>";
+                    }
+                    areaSelectHTML += "</select>";
+                    $("#updateArea").append(areaSelectHTML);
+                }else{
+                    alert(result.message);
+                }
+            },
+            error:function(){
+                alert("查询地区信息失败!");
+            }
+        });
+    }
+
+
+
+    function showUpdateGoodDiv(id){
+        $.ajax({
+            data:{"id":id},
+            dataType:"json",
+            url:"http://localhost:8081/GoodController/toUpdateGood",
+            type:"post",
+            success:function(data){
+
+                    var pid = data.data.areaId2;
+                    $.ajax({
+                        url: "http://localhost:8081/GoodController/queryAreaByPid",
+                        dataType: "json",
+                        data: {pid: pid},
+                        success: function (result) {
+
+                            if (result.status == 200) {
+                                var good = data.data;
+
+                                if (good.areaId2 != null) {
+
+                                    initArea2(1, good.areaId2);
+                                    initArea2(good.areaId2, good.areaId);
+                                } else {
+                                    //初始化省份的下拉框
+                                    initArea2(1);
+                                }
+                            }
+                        }
+                    })
+
+
+                    bootbox.confirm({
+                        title: "修改",
+                        message: $("#updateGoodDiv form"),
+                        size: "lg",
+                        scrollable: true,
+                        callback: function (result) {
+
+                            //如果点击了确认按钮，则提交修改div表单中的数据
+                            if (result) {
+
+                                var param = {};
+                                //获取id
+                                param.id = $("#updateGoodId").val();
+
+                                //获取图片名称
+                                param.imageUrl = $("#updateGoodPath").val();
+                                //获取名称
+                                param.name = $("#updateGoodName").val();
+                                //获取价格
+                                param.price = $("#updateGoodPrice").val();
+                                param.sales = $("#updateGoodSales").val();
+                                param.stock = $("#updateGoodStock").val();
+
+                                param.shelfLife = $("#updateGoodShelfLife").val();
+                                param.barCode = $("#updateGoodBarCode").val();
+
+                                param.status = $("[name=updateStatus]:checked").val();
+                                param.areaId = $("[name=areaSelect]").eq(1).val();
+
+                                //获取单选框
+
+                                //发起新增手机的ajax请求
+
+                                $.ajax({
+                                    url: "http://localhost:8081/GoodController/updateGood",
+                                    type: "post",
+                                    dataType: "json",
+                                    data: param,
+                                    success: function (result) {
+                                        if (result.status == 200) {
+                                            bootbox.alert({
+                                                title: "<b>成功提示</b>",
+                                                message: "恭喜您修改成功!",
+                                                buttons: {
+                                                    ok: {
+                                                        label: "确定"
+                                                    }
+                                                }
+                                            });
+                                            search();
+                                        }
+                                    },
+                                    error: function () {
+                                        alert("修改失败，请联系管理员！");
+                                    }
+                                });
+                            }
+
+                            //重新赋值   以防第二次点 不出表格
+                            $("#updateGoodDiv").html(updateGoodDivHTML);
+                            //重置 文件域 时间选择
+                            initUpdateGoodPhoto();
+
+                        },
+
+                        buttons: {
+                            confirm: {
+                                label: "确认",
+                                className: "btn btn-success"
+                            },
+                            cancel: {
+                                label: "取消",
+                                className: "btn btn-danger"
+                            }
+                        }
+                    });
+
+
+                    var result = data.data;
+                    //回显表单中的数据
+                    $("#updateGoodId").val(result.id);
+                    $("#updateGoodName").val(result.name);
+                    $("#updateGoodPrice").val(result.price);
+
+                    $("#updateGoodSales").val(result.sales);
+                    $("#updateGoodStock").val(result.stock);
+
+                    $("#updateGoodBarCode").val(result.barCode);
+
+                    $("#updateGoodShelfLife").val(result.shelfLife);
+                    $("[name=updateStatus][value=" + result.status + "]").prop("checked", true);
+                    $("#updateGoodArea").val(result.areaId2);
+
+                    //回显图片
+                    $("#updatePhoto").attr("src", result.imageUrl);
+                    //回显图片路径隐藏域
+                    $("#updateGoodPath").val(result.imageUrl);
+
+
+            },
+            error:function(){
+
+                alert("无法修改   别点了!!!")
+            }
+        })
+
+    }
+
+    function changeArea2(obj){
+        if(obj){
+            $(obj).nextAll("select").remove();
+
+        }
+        $.ajax({
+            url:"http://localhost:8081/GoodController/queryAreaByPid",
+            data:{pid:obj.value},
+            dataType:"json",
+            async:false,
+            success:function(result){
+                if(result.status == 200){
+                    if(result.data == null || result.data.length < 1){
+                        return;
+                    }
+
+                    var areaSelectHTML = "<select name='areaSelect' class='selt mr5' onchange='changeArea2(this)'>";
+                    areaSelectHTML += "<option value='-1'>--请选择--</option>";
+                    for(var i = 0 ; i < result.data.length ; i ++){
+                        areaSelectHTML += "<option value='" + result.data[i].id + "'>" + result.data[i].name + "</option>";
+                    }
+                    areaSelectHTML += "</select>";
+                    $("#updateArea").append(areaSelectHTML);
+                }
+            },
+
+        });
+    }
+
+</script>
+
+
+<!-- 删除 -->
+<script>
+    /*单独删除*/
+    function deleteGood(id){
+
+        //弹出一个确认框
+        bootbox.confirm({
+            title:"删除提示",
+            message:"您确定要删除吗?",
+            buttons:{
+                //設置確定按鈕的文字和樣式
+                confirm:{
+                    label:"确定",
+                    className:"btn btn-success"
+                },
+                //設置取消按鈕的文字和樣式
+                cancel:{
+                    label:"取消",
+                    className:"btn btn-danger"
+                }
+            },
+            callback:function(result){
+                //如果用户点击了确认按钮
+                if(result){
+                    //发起一个删除服装的ajax请求
+                    $.ajax({
+                        url:"http://localhost:8081/GoodController/deleteGood",
+                        type:"post",
+                        data:{id:id},
+                        dataType:"json",
+                        success:function(result){
+                            if(result.status == 200){
+                                //重新加载表格中的数据
+                                alert("删除成功")
+                                search();
+                            }else{
+                                alert("删除失败!");
+                            }
+                        },
+                        error:function(){
+                            alert("删除失败!");
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+
+    /*批量删除*/
+    function batchDelete() {
+
+        var ids = $("[name=id]:checked");
+        if(ids.length > 0){
+            //弹出一个确认框
+            bootbox.confirm({
+                title:"删除提示",
+                message:"您确定要删除吗?",
+                buttons:{
+                    //設置確定按鈕的文字和樣式
+                    confirm:{
+                        label:"确定",
+                        className:"btn btn-success"
+                    },
+                    //設置取消按鈕的文字和樣式
+                    cancel:{
+                        label:"取消",
+                        className:"btn btn-danger"
+                    }
+                },
+                callback:function(result){
+                    if(result){
+                        var idArr = [];
+                        ids.each(function(){
+                            idArr.push(this.value);
+                        });
+                        /*if(ids.length>0)
+                        *
+                        *var idArr = "";
+						idArr.each(function(i,e){
+							idArr += e.value + ",";
+						});
+						idArr = idArr.substring(0,ids.length-1);
+                        *
+                        * */
+
+
+                        //发起一个批量删除电影的ajax请求
+                        $.ajax({
+                            url:"http://localhost:8081/GoodController/batchDeleteGood",
+                            type:"post",
+                            data:{idArr:idArr},
+                            dataType:"json",
+                            success:function(result){
+                                if(result.success){
+                                    //重新加载表格中的数据
+                                    alert("已删除所选信息!");
+                                    search();
+                                }else{
+                                    alert("批量删除失败!");
+                                }
+                            },
+                            error:function(){
+                                alert("批量删除失败!");
+                            }
+                        });
+                    }
+                }
+            });
+
+        }else{
+            alert("请先选择要删除的电影!");
+        }
+    }
+
+</script>
+
+
+</html>
